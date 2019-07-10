@@ -25,27 +25,73 @@ public class QuestionService {
     public PageDTO list(Integer page, Integer size) {
 
         PageDTO pageDTO = new PageDTO();
-        //拿到问题总数量,确认分页内容
+        //如果文章数量和每页数量求余为0表示不需要多出页数，否则总页数需要加1
         Integer totalCount = questionMapper.count();
-        pageDTO.setPagination(totalCount,page,size);
-
+        Integer totalPage;
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+        //容错处理
         if (page < 1) {
             page = 1;
         }
-        if (page > pageDTO.getTotalPage()) {
-            page = pageDTO.getTotalPage();
+        if (page > totalPage) {
+            page = totalPage;
         }
-
+        //拿到问题总数量,确认分页内容
+        pageDTO.setPagination(totalPage, page);
         //分页参数,offset起始页数，size每页数量，page第几页
-        Integer offset = size * (page-1);
+        Integer offset = size * (page - 1);
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();
-        List<Question> questionList =  questionMapper.list(offset,size);
-        for (Question question : questionList){
+        List<Question> questionList = questionMapper.list(offset, size);
+        for (Question question : questionList) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             //把一个对象的属性快速拷贝到另一个对象中
-            BeanUtils.copyProperties(question,questionDTO);
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setUser(user);
+            questionDTOList.add(questionDTO);
+        }
+
+        pageDTO.setData(questionDTOList);
+
+        return pageDTO;
+    }
+
+    public PageDTO list(Integer userId, Integer page, Integer size) {
+        PageDTO pageDTO = new PageDTO();
+
+
+        //如果文章数量和每页数量求余为0表示不需要多出页数，否则总页数需要加1
+        Integer totalCount = questionMapper.countByUserId(userId);
+        Integer totalPage;
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+        //容错处理
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > totalPage) {
+            page = totalPage;
+        }
+        //拿到问题总数量,确认分页内容
+        pageDTO.setPagination(totalPage, page);
+        //分页参数,offset起始页数，size每页数量，page第几页
+        Integer offset = size * (page - 1);
+
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+        List<Question> questionList = questionMapper.listByUserId(userId, offset, size);
+        for (Question question : questionList) {
+            User user = userMapper.findById(question.getCreator());
+            QuestionDTO questionDTO = new QuestionDTO();
+            //把一个对象的属性快速拷贝到另一个对象中
+            BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }

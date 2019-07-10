@@ -24,14 +24,10 @@ public class PageDTO {
     //总页数
     private Integer totalPage;
 
-    public void setPagination(Integer totalCount, Integer page, Integer size) {
+    public void setPagination(Integer totalPage, Integer page) {
 
-        //如果文章数量和每页数量求余为0表示不需要多出页数，否则总页数需要加1
-        if (totalCount % size == 0) {
-            totalPage = totalCount / size;
-        } else {
-            totalPage = totalCount / size + 1;
-        }
+        this.totalPage = totalPage;
+        this.page = page;
 
         pages.add(page);
         for (int i = 1; i <= 3; i++) {
@@ -42,14 +38,6 @@ public class PageDTO {
                 pages.add(page + i);
             }
         }
-        //容错处理
-        if (page < 1) {
-            page = 1;
-        }
-        if (page > totalPage) {
-            page = totalPage;
-        }
-        this.page = page;
         //如果是第一页，则没有向上一页&回到首页按钮
         if (page == 1) {
             showPrevious = false;
