@@ -1,5 +1,6 @@
 package life.el.community.service;
 
+import life.el.community.dto.PageDTO;
 import life.el.community.dto.QuestionDTO;
 import life.el.community.mapper.QuestionMapper;
 import life.el.community.mapper.UserMapper;
@@ -21,9 +22,25 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> list() {
+    public PageDTO list(Integer page, Integer size) {
+
+        PageDTO pageDTO = new PageDTO();
+        //拿到问题总数量,确认分页内容
+        Integer totalCount = questionMapper.count();
+        pageDTO.setPagination(totalCount,page,size);
+
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > pageDTO.getTotalPage()) {
+            page = pageDTO.getTotalPage();
+        }
+
+        //分页参数,offset起始页数，size每页数量，page第几页
+        Integer offset = size * (page-1);
+
         List<QuestionDTO> questionDTOList = new ArrayList<>();
-        List<Question> questionList =  questionMapper.list();
+        List<Question> questionList =  questionMapper.list(offset,size);
         for (Question question : questionList){
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
@@ -32,6 +49,9 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        return questionDTOList;
+
+        pageDTO.setData(questionDTOList);
+
+        return pageDTO;
     }
 }

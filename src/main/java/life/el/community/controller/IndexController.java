@@ -1,5 +1,6 @@
 package life.el.community.controller;
 
+import life.el.community.dto.PageDTO;
 import life.el.community.dto.QuestionDTO;
 import life.el.community.mapper.QuestionMapper;
 import life.el.community.mapper.UserMapper;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +27,10 @@ public class IndexController {
     QuestionService questionService;
 
     @GetMapping("/")
-    public String hello(HttpServletRequest request, Model model){
+    public String hello(HttpServletRequest request, Model model,
+                        @RequestParam(name = "page",defaultValue = "1") Integer page,
+                        @RequestParam(name = "size",defaultValue = "2") Integer size){
+
         //保存用户信息到cookie中，并在前台展示
         Cookie[] cookies = request.getCookies();
         if(cookies!=null && cookies.length>0){
@@ -40,10 +45,10 @@ public class IndexController {
                 }
             }
         }
-
         //获取文章信息
-        List<QuestionDTO> questionList = questionService.list();
-        model.addAttribute("questionList",questionList);
+        PageDTO pages = questionService.list(page,size);
+        model.addAttribute("pages",pages);
+
         return "index";
     }
 }
