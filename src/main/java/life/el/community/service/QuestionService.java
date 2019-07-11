@@ -44,7 +44,9 @@ public class QuestionService {
         pageDTO.setPagination(totalPage, page);
         //分页参数,offset起始页数，size每页数量，page第几页
         Integer offset = size * (page - 1);
-
+        if(offset<0){
+            offset=0;
+        }
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         List<Question> questionList = questionMapper.list(offset, size);
         for (Question question : questionList) {
@@ -110,5 +112,19 @@ public class QuestionService {
         User user = userMapper.findById(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        if (question.getId()==null){
+            //创建
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.create(question);
+        }else{
+            //更新
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }
+
     }
 }
