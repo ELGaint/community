@@ -84,7 +84,9 @@ public class QuestionService {
         pageDTO.setPagination(totalPage, page);
         //分页参数,offset起始页数，size每页数量，page第几页
         Integer offset = size * (page - 1);
-
+        if(offset<0){
+            offset=0;
+        }
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         List<Question> questionList = questionMapper.listByUserId(userId, offset, size);
         for (Question question : questionList) {
@@ -99,5 +101,14 @@ public class QuestionService {
         pageDTO.setData(questionDTOList);
 
         return pageDTO;
+    }
+
+    public QuestionDTO getById(Integer id) {
+        Question question = questionMapper.getById(id);
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        User user = userMapper.findById(question.getCreator());
+        questionDTO.setUser(user);
+        return questionDTO;
     }
 }
