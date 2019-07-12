@@ -2,6 +2,8 @@ package life.el.community.service;
 
 import life.el.community.dto.PageDTO;
 import life.el.community.dto.QuestionDTO;
+import life.el.community.exception.CustomizeErrorCode;
+import life.el.community.exception.CustomizeException;
 import life.el.community.mapper.QuestionMapper;
 import life.el.community.mapper.UserMapper;
 import life.el.community.model.Question;
@@ -107,6 +109,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Integer id) {
         Question question = questionMapper.getById(id);
+        if (question==null){
+            throw  new CustomizeException(CustomizeErrorCode.QUESTION_NOTFOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.findById(question.getCreator());
@@ -123,7 +128,10 @@ public class QuestionService {
         }else{
             //更新
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.update(question);
+            Integer updated = questionMapper.update(question);
+            if(updated !=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOTFOUND);
+            }
         }
 
     }
