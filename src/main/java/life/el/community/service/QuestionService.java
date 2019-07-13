@@ -135,4 +135,9 @@ public class QuestionService {
         }
 
     }
+
+    public void incView(QuestionDTO questionDTO) {
+        questionDTO.setViewCount(1);
+        questionMapper.updateByExampleSelective(questionDTO);
+    }
 }

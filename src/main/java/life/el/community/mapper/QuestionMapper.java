@@ -1,5 +1,6 @@
 package life.el.community.mapper;
 
+import life.el.community.dto.QuestionDTO;
 import life.el.community.model.Question;
 import org.apache.ibatis.annotations.*;
 
@@ -18,7 +19,7 @@ public interface QuestionMapper {
     Integer count();
 
     @Select("select * from question where creator=#{userId} limit #{offset},#{size}")
-    List<Question> listByUserId(@Param("userId")Integer userId, @Param("offset")Integer offset, @Param("size") Integer size);
+    List<Question> listByUserId(@Param("userId") Integer userId, @Param("offset") Integer offset, @Param("size") Integer size);
 
     @Select("select count(1) from question where creator=#{userId}")
     Integer countByUserId(@Param("userId") Integer userId);
@@ -28,4 +29,10 @@ public interface QuestionMapper {
 
     @Update("update question set title=#{title},description=#{description},gmt_modified=#{gmtModified},tag=#{tag} where id=#{id}")
     Integer update(Question question);
+
+    @Update("update question set view_count=view_count + #{viewCount} where id=#{id}")
+    void updateByExampleSelective(QuestionDTO questionDTO);
+
+    @Update("update question set comment_count= comment_count + #{commentCount} where id=#{id}")
+    void updateByComment(Question question);
 }

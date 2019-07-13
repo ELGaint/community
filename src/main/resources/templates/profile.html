@@ -29,7 +29,7 @@
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading" th:text="${question.getTitle()}"></h4>
-                    <span class="text-desc" th:text="${question.getCommentCount()}+' 个评论 • '+${question.getViewCount()}+' 次浏览 • '+ ${#dates.format(question.getGmtCreate(),'dd-MMMM-yyyy')}"/>
+                    <span class="text-desc" th:text="${question.getCommentCount()}+' 个评论 • '+${question.getViewCount()}+' 次浏览 • '+ ${#dates.format(question.getGmtCreate(),'yyyy-MM-dd HH:mm')}"/>
                 </div>
             </div>
 
