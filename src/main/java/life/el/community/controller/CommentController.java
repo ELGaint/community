@@ -1,9 +1,8 @@
 package life.el.community.controller;
 
-import life.el.community.dto.CommentDTO;
+import life.el.community.dto.CommentCreateDTO;
 import life.el.community.dto.ResultDTO;
 import life.el.community.exception.CustomizeErrorCode;
-import life.el.community.mapper.CommentMapper;
 import life.el.community.model.Comment;
 import life.el.community.model.User;
 import life.el.community.service.CommentService;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class CommentController {
@@ -23,7 +20,7 @@ public class CommentController {
 
     @ResponseBody
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentDTO,
                        HttpServletRequest request){
 
         User user = (User) request.getSession().getAttribute("user");

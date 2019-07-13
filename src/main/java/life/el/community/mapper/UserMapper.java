@@ -4,6 +4,8 @@ import life.el.community.model.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Mapper
 public interface UserMapper {
@@ -23,4 +25,8 @@ public interface UserMapper {
 
     @Update("update user set name=#{name},token=#{token},gmt_modified=#{gmtModified},avatar_url=#{avatarUrl} where id=#{id}")
     void update(User dbUser);
+
+    //in查询多结果
+    @Select("select * from user where id in (${userIds})")
+    List<User> findByIds(@Param("userIds") String userIds);
 }
