@@ -9,6 +9,9 @@ import life.el.community.model.Comment;
 import life.el.community.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.beans.Transient;
 
 @Service
 public class CommentService {
@@ -17,6 +20,8 @@ public class CommentService {
     @Autowired
     QuestionMapper questionMapper;
 
+    //开启事务回滚
+    @Transactional
     public void insert(Comment comment) {
         if(comment.getParentId()==null || comment.getParentId()==0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOTFOUND);

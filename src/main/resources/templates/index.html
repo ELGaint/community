@@ -12,7 +12,16 @@
     <script src="/js/community.js" type="application/javascript"></script>
     <script src="/js/editormd.min.js" type="application/javascript"></script>
 </head>
-
+<!--使用localStorage存储closable(是否关闭窗口)变量-->
+<script type="application/javascript">
+    window.onload=function () {
+        var closable = window.localStorage.getItem("closable");
+        if(closable=="true"){
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
 <div class="container-fluid main">
